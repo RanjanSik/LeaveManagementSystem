@@ -1,0 +1,70 @@
+@model LeaveReviewViewModel
+@{
+    ViewData["Title"] = "Review Leave Request";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3">Review Leave Request</h1>
+
+                <dl class="row mb-4">
+                    <dt class="col-sm-4">Employee</dt>
+                    <dd class="col-sm-8">@Model.EmployeeName</dd>
+
+                    <dt class="col-sm-4">Department</dt>
+                    <dd class="col-sm-8">@(Model.Department ?? "-")</dd>
+
+                    <dt class="col-sm-4">From Date</dt>
+                    <dd class="col-sm-8">@Model.FromDate.ToString("dd MMM yyyy")</dd>
+
+                    <dt class="col-sm-4">To Date</dt>
+                    <dd class="col-sm-8">@Model.ToDate.ToString("dd MMM yyyy")</dd>
+
+                    <dt class="col-sm-4">Duration</dt>
+                    <dd class="col-sm-8">@Model.DurationDays day(s)</dd>
+
+                    <dt class="col-sm-4">Reason</dt>
+                    <dd class="col-sm-8">@Model.Reason</dd>
+
+                    <dt class="col-sm-4">Current Status</dt>
+                    <dd class="col-sm-8"><span class="badge status-@Model.Status.ToString().ToLowerInvariant()">@Model.Status</span></dd>
+                </dl>
+
+                @if (Model.Status == LeaveStatus.Pending)
+                {
+                    <div class="mb-3">
+                        <label class="form-label" for="reviewComments">Comments (optional)</label>
+                        <textarea id="reviewComments" name="reviewComments" class="form-control" rows="3"
+                                  form="approveForm">@Model.ReviewComments</textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <form id="approveForm" asp-action="Approve" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="reviewComments" id="approveComments" />
+                            <button type="submit" class="btn btn-success"
+                                    onclick="document.getElementById('approveComments').value = document.getElementById('reviewComments').value;">
+                                Approve
+                            </button>
+                        </form>
+                        <form asp-action="Reject" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="reviewComments" id="rejectComments" />
+                            <button type="submit" class="btn btn-danger"
+                                    onclick="document.getElementById('rejectComments').value = document.getElementById('reviewComments').value;">
+                                Reject
+                            </button>
+                        </form>
+                        <a class="btn btn-outline-secondary" asp-action="Index">Back</a>
+                    </div>
+                }
+                else
+                {
+                    <a class="btn btn-outline-secondary" asp-action="Index">Back</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

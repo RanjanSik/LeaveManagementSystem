@@ -1,0 +1,103 @@
+@model EmployeeDashboardViewModel
+@{
+    ViewData["Title"] = "My Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Welcome, @Model.FullName</h1>
+        <p class="text-muted mb-0">Your leave summary and recent requests</p>
+    </div>
+    <a class="btn btn-primary" asp-controller="Leaves" asp-action="Apply">Apply for Leave</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Total Requests</div>
+                <div class="display-6">@Model.TotalCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Pending</div>
+                <div class="display-6 text-warning">@Model.PendingCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Approved</div>
+                <div class="display-6 text-success">@Model.ApprovedCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Rejected</div>
+                <div class="display-6 text-danger">@Model.RejectedCount</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Leave History</h2>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Days</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Reviewed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if (!Model.LeaveHistory.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">You have not submitted any leave requests yet.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model.LeaveHistory)
+                    {
+                        <tr>
+                            <td>@item.FromDate.ToString("dd MMM yyyy")</td>
+                            <td>@item.ToDate.ToString("dd MMM yyyy")</td>
+                            <td>@item.DurationDays</td>
+                            <td>@item.Reason</td>
+                            <td><span class="badge status-@item.Status.ToString().ToLowerInvariant()">@item.Status</span></td>
+                            <td>
+                                @if (item.ReviewedBy != null)
+                                {
+                                    <div>@item.ReviewedBy.FullName</div>
+                                    <div class="small text-muted">@item.ReviewedAt?.ToLocalTime().ToString("dd MMM yyyy HH:mm")</div>
+                                    @if (!string.IsNullOrWhiteSpace(item.ReviewComments))
+                                    {
+                                        <div class="small">@item.ReviewComments</div>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Awaiting review</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

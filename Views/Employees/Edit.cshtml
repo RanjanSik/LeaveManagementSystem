@@ -1,0 +1,28 @@
+@model EmployeeFormViewModel
+@{
+    ViewData["Title"] = "Edit Employee";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3">Edit Employee</h1>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="IsEdit" />
+                    <partial name="_EmployeeForm" model="Model" />
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
